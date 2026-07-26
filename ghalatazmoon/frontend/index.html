@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>غلط‌آزمون | داشبورد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F4F7;
+  --surface:#FFFFFF;
+  --surface-2:#FAFBFC;
+  --ink:#1A1D2B;
+  --ink-soft:#5B6072;
+  --ink-faint:#9599A8;
+  --border:#E5E7ED;
+  --primary:#2D3A8C;
+  --primary-soft:#EAECF8;
+  --rust:#C1440E;
+  --rust-soft:#FCEAE1;
+  --teal:#1F7A5C;
+  --teal-soft:#E4F3EE;
+  --gold:#B98900;
+  --gold-soft:#FBF2DA;
+  --radius-lg:20px;
+  --radius-md:14px;
+  --radius-sm:10px;
+  --shadow:0 1px 2px rgba(20,22,40,.04), 0 8px 24px -12px rgba(20,22,40,.10);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  font-family:'Vazirmatn', sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  font-size:15px;
+}
+.mono{font-family:'JetBrains Mono','Vazirmatn',monospace; direction:ltr; display:inline-block;}
+.app{display:flex; min-height:100vh;}
+.hidden{display:none !important;}
+
+/* ===== Sidebar ===== */
+.sidebar{
+  width:250px; flex-shrink:0;
+  background:var(--surface);
+  border-left:1px solid var(--border);
+  padding:26px 20px;
+  display:flex; flex-direction:column; gap:28px;
+}
+.brand{display:flex; align-items:center; gap:10px; padding:0 4px;}
+.brand-mark{
+  width:34px; height:34px; border-radius:10px;
+  background:linear-gradient(135deg, var(--primary), #1B2566);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-weight:800; font-size:15px;
+}
+.brand-name{font-weight:800; font-size:17px; letter-spacing:-.2px;}
+.brand-sub{font-size:11px; color:var(--ink-faint); margin-top:1px;}
+
+.nav{display:flex; flex-direction:column; gap:3px;}
+.nav-item{
+  display:flex; align-items:center; gap:11px;
+  padding:10px 12px; border-radius:var(--radius-sm);
+  color:var(--ink-soft); font-size:14px; font-weight:500;
+  cursor:pointer; transition:.15s;
+  border:1px solid transparent;
+}
+.nav-item:hover{background:var(--surface-2);}
+.nav-item.active{background:var(--primary-soft); color:var(--primary); font-weight:700;}
+.nav-icon{width:18px; height:18px; flex-shrink:0; opacity:.85;}
+
+.streak-card{
+  margin-top:auto;
+  background:linear-gradient(160deg, #1B2566, var(--primary));
+  border-radius:var(--radius-md);
+  padding:16px;
+  color:#fff;
+  cursor:pointer;
+}
+.streak-num{font-size:26px; font-weight:800; font-family:'JetBrains Mono'; direction:ltr;}
+.streak-label{font-size:12px; opacity:.8; margin-top:2px;}
+.streak-flames{display:flex; gap:4px; margin-top:10px;}
+.flame-dot{width:16px; height:16px; border-radius:5px; background:rgba(255,255,255,.25);}
+.flame-dot.on{background:#FFC24B;}
+
+/* ===== Main ===== */
+.main{flex:1; padding:28px 34px; max-width:1180px;}
+.topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:26px;}
+.page-title{font-size:22px; font-weight:800; letter-spacing:-.3px;}
+.page-sub{font-size:13px; color:var(--ink-soft); margin-top:3px;}
+.topbar-actions{display:flex; gap:10px;}
+.btn{
+  border:none; border-radius:var(--radius-sm); padding:10px 16px;
+  font-family:inherit; font-size:13.5px; font-weight:700; cursor:pointer;
+  display:flex; align-items:center; gap:7px; transition:.15s;
+}
+.btn-primary{background:var(--primary); color:#fff;}
+.btn-primary:hover{background:#243075;}
+.btn-rust{background:var(--rust); color:#fff;}
+.btn-rust:hover{background:#a8390c;}
+.btn-ghost{background:var(--surface); color:var(--ink); border:1px solid var(--border);}
+.btn-ghost:hover{background:var(--surface-2);}
+.btn:disabled{opacity:.5; cursor:not-allowed;}
+
+/* ===== Stat strip ===== */
+.stat-strip{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px;}
+.stat-card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:18px; box-shadow:var(--shadow);
+}
+.stat-top{display:flex; justify-content:space-between; align-items:flex-start;}
+.stat-label{font-size:12.5px; color:var(--ink-soft); font-weight:600;}
+.stat-badge{font-size:10.5px; padding:3px 8px; border-radius:20px; font-weight:700;}
+.badge-rust{background:var(--rust-soft); color:var(--rust);}
+.badge-teal{background:var(--teal-soft); color:var(--teal);}
+.badge-gold{background:var(--gold-soft); color:var(--gold);}
+.stat-value{font-family:'JetBrains Mono'; font-size:30px; font-weight:700; margin-top:10px; direction:ltr;}
+.stat-foot{font-size:12px; color:var(--ink-faint); margin-top:4px;}
+
+/* ===== Grid layout ===== */
+.grid-2{display:grid; grid-template-columns:1.3fr 1fr; gap:16px; margin-bottom:16px;}
+.card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:20px; box-shadow:var(--shadow);
+}
+.card-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;}
+.card-title{font-size:15.5px; font-weight:800;}
+.card-link{font-size:12.5px; color:var(--primary); font-weight:700; cursor:pointer;}
+
+/* weakness bars */
+.wk-row{margin-bottom:14px;}
+.wk-row:last-child{margin-bottom:0;}
+.wk-top{display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;}
+.wk-name{font-weight:700;}
+.wk-count{color:var(--ink-faint); font-family:'JetBrains Mono'; font-size:12px;}
+.wk-bar{height:10px; border-radius:6px; background:var(--surface-2); overflow:hidden; display:flex;}
+.seg{height:100%;}
+.seg.conceptual{background:var(--rust);}
+.seg.calculation{background:var(--gold);}
+.seg.careless{background:#8B95A8;}
+.legend{display:flex; gap:14px; margin-top:14px; flex-wrap:wrap;}
+.legend-item{display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--ink-soft);}
+.legend-dot{width:8px; height:8px; border-radius:3px;}
+.empty-note{font-size:12.5px; color:var(--ink-faint); padding:8px 0;}
+
+/* review list */
+.rev-item{
+  display:flex; align-items:center; gap:12px; padding:11px 0;
+  border-bottom:1px solid var(--border);
+}
+.rev-item:last-child{border-bottom:none; padding-bottom:0;}
+.rev-icon{
+  width:36px; height:36px; border-radius:10px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:800;
+}
+.rev-info{flex:1; min-width:0;}
+.rev-title{font-size:13.5px; font-weight:700;}
+.rev-meta{font-size:11.5px; color:var(--ink-faint); margin-top:2px;}
+.rev-tag{font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:20px; white-space:nowrap;}
+
+/* Modal (mistake form) */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(20,22,40,.45); backdrop-filter:blur(2px);
+  display:none; align-items:center; justify-content:center; z-index:50; padding:20px;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:var(--surface); border-radius:var(--radius-lg); width:100%; max-width:520px;
+  max-height:88vh; overflow-y:auto; box-shadow:0 24px 60px -20px rgba(20,22,40,.35);
+}
+.modal.wide{max-width:640px;}
+.modal-head{padding:20px 22px 0; display:flex; justify-content:space-between; align-items:center;}
+.modal-close{cursor:pointer; color:var(--ink-faint); font-size:18px; width:28px; height:28px; display:flex; align-items:center; justify-content:center; border-radius:8px;}
+.modal-close:hover{background:var(--surface-2);}
+.modal-body{padding:18px 22px 22px;}
+.form-row{margin-bottom:14px;}
+.form-row.two{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+label{display:block; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-bottom:6px;}
+select, input[type=text], input[type=tel], input[type=password], input[type=number], textarea{
+  width:100%; border:1px solid var(--border); border-radius:var(--radius-sm);
+  padding:9px 12px; font-family:inherit; font-size:13.5px; background:var(--surface-2); color:var(--ink);
+}
+textarea{resize:vertical; min-height:64px;}
+.reason-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px;}
+.reason-chip{
+  border:1px solid var(--border); border-radius:var(--radius-sm); padding:9px 6px;
+  text-align:center; font-size:12px; font-weight:600; cursor:pointer; transition:.12s; color:var(--ink-soft);
+}
+.reason-chip:hover{border-color:var(--primary);}
+.reason-chip.sel{background:var(--primary-soft); border-color:var(--primary); color:var(--primary); font-weight:800;}
+.upload-box{
+  border:1.5px dashed var(--border); border-radius:var(--radius-md); padding:22px;
+  text-align:center; color:var(--ink-faint); font-size:12.5px; cursor:pointer;
+}
+.upload-box:hover{border-color:var(--primary); color:var(--primary);}
+.modal-foot{display:flex; gap:10px; margin-top:6px;}
+.modal-foot .btn{flex:1; justify-content:center;}
+.form-error{color:var(--rust); font-size:12.5px; margin-top:4px; min-height:16px;}
+
+/* Auth screen */
+.auth-wrap{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;}
+.auth-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow); padding:32px; width:100%; max-width:400px;}
+.auth-tabs{display:flex; gap:6px; background:var(--surface-2); border-radius:var(--radius-sm); padding:4px; margin-bottom:22px;}
+.auth-tab{flex:1; text-align:center; padding:8px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; color:var(--ink-soft);}
+.auth-tab.active{background:var(--surface); color:var(--primary); box-shadow:var(--shadow);}
+
+/* Mistake table */
+.mtable{width:100%; border-collapse:collapse; font-size:13px;}
+.mtable th{text-align:right; padding:10px 8px; color:var(--ink-faint); font-weight:700; font-size:11.5px; border-bottom:1px solid var(--border);}
+.mtable td{padding:11px 8px; border-bottom:1px solid var(--border); vertical-align:middle;}
+.pill{font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:20px; white-space:nowrap; display:inline-block;}
+
+/* Exam overlay */
+.exam-overlay{position:fixed; inset:0; background:var(--bg); z-index:60; display:none; flex-direction:column;}
+.exam-overlay.open{display:flex;}
+.exam-top{display:flex; justify-content:space-between; align-items:center; padding:18px 30px; background:var(--surface); border-bottom:1px solid var(--border);}
+.exam-body{flex:1; overflow-y:auto; padding:30px; display:flex; justify-content:center;}
+.exam-card{max-width:640px; width:100%;}
+.qn-badge{font-size:12px; color:var(--ink-faint); font-weight:700; margin-bottom:8px;}
+.qn-title{font-size:17px; font-weight:800; margin-bottom:4px;}
+.qn-meta{font-size:12.5px; color:var(--ink-faint); margin-bottom:18px;}
+.opt-grid{display:grid; gap:10px; margin-bottom:20px;}
+.opt-item{border:1.5px solid var(--border); border-radius:var(--radius-md); padding:13px 16px; cursor:pointer; font-size:13.5px; font-weight:600; transition:.12s;}
+.opt-item:hover{border-color:var(--primary);}
+.opt-item.sel{border-color:var(--primary); background:var(--primary-soft); color:var(--primary); font-weight:800;}
+.opt-item.correct{border-color:var(--teal); background:var(--teal-soft); color:var(--teal);}
+.opt-item.wrong{border-color:var(--rust); background:var(--rust-soft); color:var(--rust);}
+.exam-nav{display:flex; gap:10px; justify-content:space-between; margin-top:6px;}
+.result-big{font-family:'JetBrains Mono'; font-size:44px; font-weight:800; direction:ltr;}
+
+@media(max-width:900px){
+  .sidebar{display:none;}
+  .stat-strip{grid-template-columns:repeat(2,1fr);}
+  .grid-2{grid-template-columns:1fr;}
+  .main{padding:18px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ AUTH SCREEN ============ -->
+<div class="auth-wrap" id="authScreen">
+  <div class="auth-card">
+    <div class="brand" style="margin-bottom:22px; justify-content:center;">
+      <div class="brand-mark">غ</div>
+      <div>
+        <div class="brand-name">غلط‌آزمون</div>
+        <div class="brand-sub">آزمون‌ساز شخصی کنکور</div>
+      </div>
+    </div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">ورود</div>
+      <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">ثبت‌نام</div>
+    </div>
+
+    <div id="loginForm">
+      <div class="form-row"><label>شماره موبایل</label><input type="tel" id="loginPhone" placeholder="09xxxxxxxxx"></div>
+      <div class="form-row"><label>رمز عبور</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
+      <div class="form-error" id="loginError"></div>
+      <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="doLogin()">ورود</button>
+    </div>
+
+    <div id="registerForm" class="hidden">
+      <div class="form-row"><label>نام و نام‌خانوادگی</label><input type="text" id="regName" placeholder="مثلاً آرمین محمدی"></div>
+      <div class="form-row"><label>شماره موبایل</label><input type="tel" id="regPhone" placeholder="09xxxxxxxxx"></div>
+      <div class="form-row two">
+        <div><label>پایه</label><select id="regGrade"><option value="10">دهم</option><option value="11">یازدهم</option><option value="12" selected>دوازدهم</option><option value="13">فارغ‌التحصیل</option></select></div>
+        <div><label>رشته</label><select id="regField"><option>تجربی</option><option>ریاضی</option><option>انسانی</option></select></div>
+      </div>
+      <div class="form-row"><label>رمز عبور (حداقل ۶ کاراکتر)</label><input type="password" id="regPassword" placeholder="••••••••"></div>
+      <div class="form-error" id="registerError"></div>
+      <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="doRegister()">ساخت حساب و شروع</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div class="app hidden" id="appRoot">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">غ</div>
+      <div>
+        <div class="brand-name">غلط‌آزمون</div>
+        <div class="brand-sub">آزمون‌ساز شخصی کنکور</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>
+        داشبورد
+      </div>
+      <div class="nav-item" onclick="openMistakeModal()">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        ثبت غلط جدید
+      </div>
+      <div class="nav-item" data-view="bank" onclick="switchView('bank')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/></svg>
+        بانک غلط‌های من
+      </div>
+      <div class="nav-item" onclick="openExamConfigModal()">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M10 19V9M16 19v-6M22 19H2"/></svg>
+        تولید آزمون
+      </div>
+      <div class="nav-item" data-view="analytics" onclick="switchView('analytics')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 15l4-5 3 3 5-7"/></svg>
+        آنالیتیکس
+      </div>
+    </nav>
+
+    <div class="streak-card" onclick="switchView('analytics')">
+      <div class="streak-num mono" id="sideStreak">۰ روز</div>
+      <div class="streak-label">استریک مطالعه‌ی پیوسته</div>
+      <div class="streak-flames" id="sideFlames"></div>
+    </div>
+    <div class="nav-item" onclick="logout()" style="margin-top:-10px;">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      خروج
+    </div>
+  </aside>
+
+  <!-- MAIN: DASHBOARD -->
+  <main class="main" id="view-dashboard">
+    <div class="topbar">
+      <div>
+        <div class="page-title" id="greeting">سلام 👋</div>
+        <div class="page-sub" id="greetingSub">در حال بارگذاری...</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost" onclick="openMistakeModal()">+ ثبت غلط</button>
+        <button class="btn btn-rust" onclick="quickGenerateToday()">🎯 تولید آزمون امروز</button>
+      </div>
+    </div>
+
+    <div class="stat-strip" id="statStrip"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">نقشه‌ی ضعف بر اساس درس</div>
+          <div class="card-link" onclick="switchView('analytics')">مشاهده‌ی کامل</div>
+        </div>
+        <div id="weaknessMap"><div class="empty-note">در حال بارگذاری...</div></div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--rust)"></div>مفهومی</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>محاسباتی</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#8B95A8"></div>سایر</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">صف مرور امروز</div>
+          <div class="card-link" onclick="quickGenerateToday()">شروع مرور</div>
+        </div>
+        <div id="reviewQueue"><div class="empty-note">در حال بارگذاری...</div></div>
+      </div>
+    </div>
+
+    <div class="card" id="weaknessPatternsCard"></div>
+  </main>
+
+  <!-- MAIN: MISTAKE BANK -->
+  <main class="main hidden" id="view-bank">
+    <div class="topbar">
+      <div>
+        <div class="page-title">بانک غلط‌های من</div>
+        <div class="page-sub">همه‌ی غلط‌های ثبت‌شده، فیلترپذیر بر اساس وضعیت</div>
+      </div>
+      <div class="topbar-actions">
+        <select id="bankStatusFilter" onchange="loadBank()" style="width:auto;">
+          <option value="">همه وضعیت‌ها</option>
+          <option value="active">فعال</option>
+          <option value="improving">در حال بهبود</option>
+          <option value="mastered">مسلط</option>
+          <option value="archived">آرشیو</option>
+        </select>
+        <button class="btn btn-ghost" onclick="openMistakeModal()">+ ثبت غلط</button>
+      </div>
+    </div>
+    <div class="card">
+      <table class="mtable">
+        <thead><tr><th>درس / فصل</th><th>منبع</th><th>علت</th><th>وضعیت</th><th>اولویت</th><th>موعد مرور بعدی</th></tr></thead>
+        <tbody id="bankRows"></tbody>
+      </table>
+      <div class="empty-note hidden" id="bankEmpty">هنوز غلطی ثبت نکرده‌ای — از دکمه‌ی «ثبت غلط» شروع کن.</div>
+    </div>
+  </main>
+
+  <!-- MAIN: ANALYTICS -->
+  <main class="main hidden" id="view-analytics">
+    <div class="topbar">
+      <div>
+        <div class="page-title">آنالیتیکس</div>
+        <div class="page-sub">روند و توزیع علت غلط‌ها</div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><div class="card-title">توزیع علت غلط</div></div>
+        <div id="reasonBreakdown"><div class="empty-note">در حال بارگذاری...</div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">ضعیف‌ترین مباحث</div></div>
+        <div id="weakTopics"><div class="empty-note">در حال بارگذاری...</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-title">روند دقت ۳۰ روز اخیر</div></div>
+      <div id="trendChart"><div class="empty-note">در حال بارگذاری...</div></div>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL: ثبت غلط -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div style="font-size:16px; font-weight:800;">ثبت غلط جدید</div>
+      <div class="modal-close" onclick="closeModal()">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-row two">
+        <div>
+          <label>درس</label>
+          <select id="mLesson" onchange="onLessonChange()"></select>
+        </div>
+        <div>
+          <label>فصل</label>
+          <select id="mChapter" onchange="onChapterChange()"></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>مبحث</label>
+        <select id="mTopic"></select>
+      </div>
+      <div class="form-row two">
+        <div>
+          <label>منبع</label>
+          <input type="text" id="mSource" placeholder="مثلاً آزمون گاج ۱۴">
+        </div>
+        <div>
+          <label>شماره سؤال</label>
+          <input type="text" id="mQNum" placeholder="مثلاً ۲۴">
+        </div>
+      </div>
+      <div class="form-row two">
+        <div>
+          <label>پاسخ صحیح</label>
+          <select id="mCorrect"><option value="1">گزینه ۱</option><option value="2">گزینه ۲</option><option value="3">گزینه ۳</option><option value="4">گزینه ۴</option></select>
+        </div>
+        <div>
+          <label>پاسخ من</label>
+          <select id="mStudent"><option value="3">گزینه ۳</option><option value="1">گزینه ۱</option><option value="2">گزینه ۲</option><option value="4">گزینه ۴</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>چرا غلط زدم؟</label>
+        <div class="reason-grid" id="reasonGrid">
+          <div class="reason-chip sel" data-val="conceptual">مفهومی</div>
+          <div class="reason-chip" data-val="calculation">محاسباتی</div>
+          <div class="reason-chip" data-val="careless">بی‌دقتی</div>
+          <div class="reason-chip" data-val="forgotten_formula">فراموشی فرمول</div>
+          <div class="reason-chip" data-val="misread_question">بدخوانی سؤال</div>
+          <div class="reason-chip" data-val="time_management">مدیریت زمان</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>عکس سؤال (لینک تصویر — اختیاری)</label>
+        <input type="text" id="mImage" placeholder="https://...">
+      </div>
+      <div class="form-row">
+        <label>یادداشت (اختیاری)</label>
+        <textarea id="mNote" placeholder="مثلاً فرمول آنتالپی رو با آنتروپی قاطی کردم..."></textarea>
+      </div>
+      <div class="form-error" id="mistakeError"></div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal()">انصراف</button>
+        <button class="btn btn-primary" onclick="saveMistake()">ذخیره‌ی غلط</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: تنظیم آزمون -->
+<div class="modal-overlay" id="examConfigOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div style="font-size:16px; font-weight:800;">تولید آزمون هوشمند</div>
+      <div class="modal-close" onclick="closeExamConfigModal()">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label>تعداد کل سؤالات</label>
+        <input type="number" id="cfgTotal" value="20" min="1" max="100">
+      </div>
+      <div class="form-row two">
+        <div><label>جدیدترین‌ها</label><input type="number" id="cfgNewest" value="10" min="0"></div>
+        <div><label>تکراری‌ها</label><input type="number" id="cfgRepeated" value="5" min="0"></div>
+      </div>
+      <div class="form-row two">
+        <div><label>فراموش‌شده‌ها</label><input type="number" id="cfgForgotten" value="3" min="0"></div>
+        <div><label>اعتمادبه‌نفس (مسلط)</label><input type="number" id="cfgMastered" value="2" min="0"></div>
+      </div>
+      <div class="form-row">
+        <label>محدودیت زمانی (دقیقه، اختیاری)</label>
+        <input type="number" id="cfgTime" placeholder="مثلاً ۲۵">
+      </div>
+      <div class="form-error" id="examConfigError"></div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeExamConfigModal()">انصراف</button>
+        <button class="btn btn-primary" onclick="startGeneratedExam()">تولید و شروع آزمون</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXAM TAKING OVERLAY -->
+<div class="exam-overlay" id="examOverlay">
+  <div class="exam-top">
+    <div style="font-weight:800;" id="examTitle">آزمون</div>
+    <div class="mono" id="examProgress" style="color:var(--ink-soft); font-size:13px;"></div>
+    <div class="btn btn-ghost" onclick="exitExam()">بستن</div>
+  </div>
+  <div class="exam-body"><div class="exam-card" id="examCardBody"></div></div>
+</div>
+
+<script>
+const API = '';
+let state = {
+  access: localStorage.getItem('ga_access') || null,
+  refresh: localStorage.getItem('ga_refresh') || null,
+  lessons: [], curriculumCache: {},
+  selectedReason: 'conceptual',
+  currentExam: null, currentQuestionIndex: 0, examAnswers: {},
+};
+
+function saveTokens(t){
+  state.access = t.access; state.refresh = t.refresh;
+  localStorage.setItem('ga_access', t.access);
+  localStorage.setItem('ga_refresh', t.refresh);
+}
+function clearTokens(){
+  state.access = null; state.refresh = null;
+  localStorage.removeItem('ga_access'); localStorage.removeItem('ga_refresh');
+}
+
+async function api(path, opts={}){
+  opts.headers = opts.headers || {};
+  if(state.access) opts.headers['Authorization'] = 'Bearer ' + state.access;
+  if(opts.body && typeof opts.body !== 'string'){
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(opts.body);
+  }
+  let res = await fetch(API + path, opts);
+  if(res.status === 401 && state.refresh){
+    const r = await fetch(API + '/api/v1/auth/refresh/', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({refresh: state.refresh})
+    });
+    if(r.ok){
+      const tokens = await r.json();
+      saveTokens(tokens);
+      opts.headers['Authorization'] = 'Bearer ' + state.access;
+      res = await fetch(API + path, opts);
+    } else {
+      clearTokens(); showAuth(); throw new Error('session expired');
+    }
+  }
+  return res;
+}
+
+// ---------- AUTH ----------
+function switchAuthTab(tab){
+  document.getElementById('tabLogin').classList.toggle('active', tab==='login');
+  document.getElementById('tabRegister').classList.toggle('active', tab==='register');
+  document.getElementById('loginForm').classList.toggle('hidden', tab!=='login');
+  document.getElementById('registerForm').classList.toggle('hidden', tab!=='register');
+}
+
+async function doLogin(){
+  const phone = document.getElementById('loginPhone').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError');
+  errEl.textContent = '';
+  const res = await fetch(API + '/api/v1/auth/login/', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({phone_number: phone, password})
+  });
+  if(!res.ok){ const d = await res.json().catch(()=>({})); errEl.textContent = d.detail || 'ورود ناموفق بود.'; return; }
+  saveTokens(await res.json());
+  await boot();
+}
+
+async function doRegister(){
+  const payload = {
+    full_name: document.getElementById('regName').value.trim(),
+    phone_number: document.getElementById('regPhone').value.trim(),
+    grade: parseInt(document.getElementById('regGrade').value),
+    field: document.getElementById('regField').value,
+    password: document.getElementById('regPassword').value,
+  };
+  const errEl = document.getElementById('registerError');
+  errEl.textContent = '';
+  const res = await fetch(API + '/api/v1/auth/register/', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+  });
+  if(!res.ok){ const d = await res.json().catch(()=>({})); errEl.textContent = d.detail || 'ثبت‌نام ناموفق بود.'; return; }
+  saveTokens(await res.json());
+  await boot();
+}
+
+function logout(){ clearTokens(); showAuth(); }
+
+function showAuth(){
+  document.getElementById('authScreen').classList.remove('hidden');
+  document.getElementById('appRoot').classList.add('hidden');
+}
+function showApp(){
+  document.getElementById('authScreen').classList.add('hidden');
+  document.getElementById('appRoot').classList.remove('hidden');
+}
+
+// ---------- VIEW SWITCH ----------
+function switchView(view){
+  ['dashboard','bank','analytics'].forEach(v=>{
+    document.getElementById('view-'+v).classList.toggle('hidden', v!==view);
+  });
+  document.querySelectorAll('.nav-item[data-view]').forEach(el=>{
+    el.classList.toggle('active', el.dataset.view === view);
+  });
+  if(view==='dashboard') loadDashboard();
+  if(view==='bank') loadBank();
+  if(view==='analytics') loadAnalytics();
+}
+
+// ---------- BOOT ----------
+async function boot(){
+  showApp();
+  await loadMe();
+  await loadCurriculum();
+  populateReasonGrid();
+  switchView('dashboard');
+}
+
+async function loadMe(){
+  const res = await api('/api/v1/auth/me/');
+  if(!res.ok) return;
+  const me = await res.json();
+  const toFa = n => String(n).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+  document.getElementById('greeting').textContent = `سلام ${me.full_name.split(' ')[0]} 👋`;
+  document.getElementById('sideStreak').textContent = toFa(me.streak_count || 0) + ' روز';
+  const flamesEl = document.getElementById('sideFlames');
+  flamesEl.innerHTML = '';
+  for(let i=0;i<7;i++){
+    const d = document.createElement('div');
+    d.className = 'flame-dot' + (i < Math.min(me.streak_count||0,7) ? ' on' : '');
+    flamesEl.appendChild(d);
+  }
+}
+
+async function loadCurriculum(){
+  const res = await api('/api/v1/lessons/');
+  state.lessons = res.ok ? await res.json() : [];
+  const sel = document.getElementById('mLesson');
+  sel.innerHTML = state.lessons.map(l => `<option value="${l.id}">${l.name}</option>`).join('');
+  if(state.lessons.length) await onLessonChange();
+}
+
+async function onLessonChange(){
+  const lessonId = document.getElementById('mLesson').value;
+  const res = await api(`/api/v1/lessons/${lessonId}/chapters/`);
+  const chapters = res.ok ? await res.json() : [];
+  const sel = document.getElementById('mChapter');
+  sel.innerHTML = chapters.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  if(chapters.length) await onChapterChange();
+  else document.getElementById('mTopic').innerHTML = '';
+}
+
+async function onChapterChange(){
+  const chapterId = document.getElementById('mChapter').value;
+  const res = await api(`/api/v1/chapters/${chapterId}/topics/`);
+  const topics = res.ok ? await res.json() : [];
+  document.getElementById('mTopic').innerHTML = topics.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+}
+
+function populateReasonGrid(){
+  document.querySelectorAll('#reasonGrid .reason-chip').forEach(chip=>{
+    chip.onclick = () => {
+      document.querySelectorAll('#reasonGrid .reason-chip').forEach(c=>c.classList.remove('sel'));
+      chip.classList.add('sel');
+      state.selectedReason = chip.dataset.val;
+    };
+  });
+}
+
+// ---------- MISTAKE MODAL ----------
+function openMistakeModal(){ document.getElementById('modalOverlay').classList.add('open'); }
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); document.getElementById('mistakeError').textContent=''; }
+document.getElementById('modalOverlay').addEventListener('click', e=>{ if(e.target.id==='modalOverlay') closeModal(); });
+
+async function saveMistake(){
+  const payload = {
+    lesson_id: parseInt(document.getElementById('mLesson').value) || null,
+    chapter_id: parseInt(document.getElementById('mChapter').value) || null,
+    topic_id: parseInt(document.getElementById('mTopic').value) || null,
+    source_book: document.getElementById('mSource').value,
+    question_number: document.getElementById('mQNum').value,
+    correct_answer: document.getElementById('mCorrect').value,
+    student_answer: document.getElementById('mStudent').value,
+    reason: state.selectedReason,
+    image_url: document.getElementById('mImage').value || null,
+    student_note: document.getElementById('mNote').value,
+    difficulty: 3,
+  };
+  const res = await api('/api/v1/mistakes/', {method:'POST', body: payload});
+  if(!res.ok){
+    const d = await res.json().catch(()=>({}));
+    document.getElementById('mistakeError').textContent = d.detail || 'خطا در ذخیره.';
+    return;
+  }
+  closeModal();
+  document.getElementById('mNote').value = ''; document.getElementById('mImage').value = '';
+  loadDashboard();
+}
+
+// ---------- DASHBOARD ----------
+const REASON_FA = {conceptual:'مفهومی', calculation:'محاسباتی', careless:'بی‌دقتی',
+  forgotten_formula:'فراموشی فرمول', time_management:'مدیریت زمان', misread_question:'بدخوانی سؤال', unknown:'نامشخص'};
+const STATUS_FA = {active:'فعال', improving:'در حال بهبود', mastered:'مسلط', archived:'آرشیو'};
+const toFaNum = n => String(n).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+
+async function loadDashboard(){
+  const [statsRes, dueRes, byLessonRes] = await Promise.all([
+    api('/api/v1/mistakes/stats-summary/'),
+    api('/api/v1/mistakes/due-today/'),
+    api('/api/v1/analytics/by-lesson/'),
+  ]);
+  const stats = statsRes.ok ? await statsRes.json() : {};
+  const due = dueRes.ok ? await dueRes.json() : [];
+  const byLesson = byLessonRes.ok ? await byLessonRes.json() : [];
+
+  document.getElementById('greetingSub').textContent =
+    `امروز ${toFaNum(stats.due_today||0)} مورد برای مرور و ${toFaNum(stats.weakness_patterns||0)} الگوی ضعف تازه داری`;
+
+  document.getElementById('statStrip').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-top"><span class="stat-label">مرور امروز</span>${stats.overdue?`<span class="stat-badge badge-rust">فوری</span>`:''}</div>
+      <div class="stat-value">${toFaNum(stats.due_today||0)}</div>
+      <div class="stat-foot">${toFaNum(stats.overdue||0)} مورد بیش از موعد مانده</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-top"><span class="stat-label">غلط‌های فعال</span></div>
+      <div class="stat-value">${toFaNum(stats.active_mistakes||0)}</div>
+      <div class="stat-foot">در ${toFaNum(stats.lessons_touched||0)} درس، ${toFaNum(stats.chapters_touched||0)} فصل</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-top"><span class="stat-label">مسلط‌شده</span></div>
+      <div class="stat-value">${toFaNum(stats.mastered_mistakes||0)}</div>
+      <div class="stat-foot">از مجموع ${toFaNum(stats.total_mistakes||0)} ثبت‌شده</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-top"><span class="stat-label">ضعیف‌ترین فصل</span>${stats.weakest_chapter?`<span class="stat-badge badge-gold">${stats.weakest_chapter.lesson}</span>`:''}</div>
+      <div class="stat-value" style="font-size:18px;">${stats.weakest_chapter ? stats.weakest_chapter.chapter : '—'}</div>
+      <div class="stat-foot">${stats.weakest_chapter ? toFaNum(stats.weakest_chapter.count) + ' غلط فعال' : 'هنوز داده‌ای نیست'}</div>
+    </div>`;
+
+  const wkEl = document.getElementById('weaknessMap');
+  if(!byLesson.length){
+    wkEl.innerHTML = '<div class="empty-note">هنوز غلطی ثبت نشده — با «ثبت غلط» شروع کن.</div>';
+  } else {
+    wkEl.innerHTML = byLesson.map(l=>{
+      const total = Object.values(l.reasons||{}).reduce((a,b)=>a+b,0) || 1;
+      const conceptual = (l.reasons?.conceptual||0);
+      const calculation = (l.reasons?.calculation||0);
+      const other = total - conceptual - calculation;
+      return `<div class="wk-row">
+        <div class="wk-top"><span class="wk-name">${l.lesson_name}</span><span class="wk-count mono">${l.mistake_count} mistake</span></div>
+        <div class="wk-bar">
+          <div class="seg conceptual" style="width:${100*conceptual/total}%"></div>
+          <div class="seg calculation" style="width:${100*calculation/total}%"></div>
+          <div class="seg careless" style="width:${100*other/total}%"></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const revEl = document.getElementById('reviewQueue');
+  if(!due.length){
+    revEl.innerHTML = '<div class="empty-note">چیزی برای مرور امروز نیست 🎉</div>';
+  } else {
+    revEl.innerHTML = due.slice(0,6).map(m=>{
+      let icon='جد', bg='var(--primary-soft)', fg='var(--primary)', tag='جدید';
+      if(m.repeat_count>0){ icon = toFaNum(m.repeat_count)+'×'; bg='var(--rust-soft)'; fg='var(--rust)'; tag='فوری'; }
+      else if(m.last_reviewed_at){ icon = toFaNum(m.interval_days); bg='var(--gold-soft)'; fg='var(--gold)'; tag='امروز'; }
+      return `<div class="rev-item">
+        <div class="rev-icon" style="background:${bg}; color:${fg};">${icon}</div>
+        <div class="rev-info">
+          <div class="rev-title">${m.source_book || 'بدون منبع'} · ${REASON_FA[m.reason]||''}</div>
+          <div class="rev-meta">${m.repeat_count>0 ? toFaNum(m.repeat_count)+' بار تکرار شده' : 'تازه ثبت‌شده'}</div>
+        </div>
+        <span class="rev-tag" style="background:${bg}; color:${fg};">${tag}</span>
+      </div>`;
+    }).join('');
+  }
+
+  const patternsRes = await api('/api/v1/analytics/weak-topics/');
+  const patternsData = patternsRes.ok ? await patternsRes.json() : {weakness_patterns:[]};
+  const pc = document.getElementById('weaknessPatternsCard');
+  if(patternsData.weakness_patterns && patternsData.weakness_patterns.length){
+    pc.innerHTML = `<div class="card-head"><div class="card-title">هشدارهای الگوی ضعف</div></div>` +
+      patternsData.weakness_patterns.map(p=>`<div class="rev-item"><div class="rev-icon" style="background:var(--rust-soft); color:var(--rust);">⚠</div>
+        <div class="rev-info"><div class="rev-title">${p.message}</div></div></div>`).join('');
+  } else {
+    pc.innerHTML = '';
+  }
+}
+
+async function quickGenerateToday(){
+  const res = await api('/api/v1/exams/generate/', {method:'POST', body:{
+    total_questions: 20,
+    composition: {newest:10, repeated:5, forgotten:3, mastered_confidence:2},
+    filters: {}, title: 'آزمون امروز',
+  }});
+  if(!res.ok){ alert('برای تولید آزمون، اول چند غلط ثبت کن.'); return; }
+  const exam = await res.json();
+  if(exam.total_questions === 0){ alert('هنوز غلط فعالی برای ساخت آزمون نداری.'); return; }
+  openExam(exam.id);
+}
+
+// ---------- EXAM CONFIG ----------
+function openExamConfigModal(){ document.getElementById('examConfigOverlay').classList.add('open'); }
+function closeExamConfigModal(){ document.getElementById('examConfigOverlay').classList.remove('open'); }
+document.getElementById('examConfigOverlay').addEventListener('click', e=>{ if(e.target.id==='examConfigOverlay') closeExamConfigModal(); });
+
+async function startGeneratedExam(){
+  const body = {
+    total_questions: parseInt(document.getElementById('cfgTotal').value) || 20,
+    composition: {
+      newest: parseInt(document.getElementById('cfgNewest').value)||0,
+      repeated: parseInt(document.getElementById('cfgRepeated').value)||0,
+      forgotten: parseInt(document.getElementById('cfgForgotten').value)||0,
+      mastered_confidence: parseInt(document.getElementById('cfgMastered').value)||0,
+    },
+    filters: {},
+    time_limit_minutes: parseInt(document.getElementById('cfgTime').value) || null,
+  };
+  const res = await api('/api/v1/exams/generate/', {method:'POST', body});
+  if(!res.ok){ document.getElementById('examConfigError').textContent = 'خطا در تولید آزمون.'; return; }
+  const exam = await res.json();
+  if(exam.total_questions === 0){ document.getElementById('examConfigError').textContent = 'هیچ غلط فعالی مطابق این ترکیب پیدا نشد.'; return; }
+  closeExamConfigModal();
+  openExam(exam.id);
+}
+
+// ---------- EXAM TAKING ----------
+async function openExam(examId){
+  await api(`/api/v1/exams/${examId}/start/`, {method:'POST'});
+  const res = await api(`/api/v1/exams/${examId}/`);
+  state.currentExam = await res.json();
+  state.currentQuestionIndex = 0;
+  state.examAnswers = {};
+  document.getElementById('examTitle').textContent = state.currentExam.title || 'آزمون';
+  document.getElementById('examOverlay').classList.add('open');
+  renderExamQuestion();
+}
+
+function exitExam(){
+  document.getElementById('examOverlay').classList.remove('open');
+  state.currentExam = null;
+  loadDashboard();
+}
+
+function renderExamQuestion(){
+  const exam = state.currentExam;
+  const idx = state.currentQuestionIndex;
+  const q = exam.questions[idx];
+  document.getElementById('examProgress').textContent = `${toFaNum(idx+1)} / ${toFaNum(exam.questions.length)}`;
+
+  const answered = state.examAnswers[q.id];
+  const options = ['1','2','3','4'];
+
+  document.getElementById('examCardBody').innerHTML = `
+    <div class="qn-badge">${REASON_FA[q.reason]||''} · ${q.source_book||'بدون منبع'} ${q.question_number?('#'+q.question_number):''}</div>
+    <div class="qn-title">سؤال ${toFaNum(idx+1)}</div>
+    <div class="qn-meta">${q.student_note ? 'یادداشت قبلی: ' + q.student_note : 'پاسخ صحیح را انتخاب کن'}</div>
+    <div class="opt-grid" id="optGrid">
+      ${options.map(o=>{
+        let cls = 'opt-item';
+        if(answered){
+          if(o === String(answered.correct_answer)) cls += ' correct';
+          else if(o === String(answered.student_answer) && !answered.is_correct) cls += ' wrong';
+        }
+        return `<div class="${cls}" onclick="answerExamQuestion('${q.id}','${o}')">گزینه ${toFaNum(o)}</div>`;
+      }).join('')}
+    </div>
+    <div class="exam-nav">
+      <button class="btn btn-ghost" ${idx===0?'disabled':''} onclick="examStep(-1)">قبلی</button>
+      ${idx === exam.questions.length-1
+        ? `<button class="btn btn-rust" onclick="finishExam()">پایان آزمون</button>`
+        : `<button class="btn btn-primary" onclick="examStep(1)">بعدی</button>`}
+    </div>`;
+}
+
+async function answerExamQuestion(qid, option){
+  if(state.examAnswers[qid]) return; // already answered
+  const res = await api(`/api/v1/exams/${state.currentExam.id}/questions/${qid}/answer/`, {
+    method:'POST', body:{student_answer: option}
+  });
+  if(!res.ok) return;
+  const result = await res.json();
+  state.examAnswers[qid] = {student_answer: option, correct_answer: result.correct_answer, is_correct: result.is_correct};
+  renderExamQuestion();
+}
+
+function examStep(delta){
+  state.currentQuestionIndex = Math.max(0, Math.min(state.currentExam.questions.length-1, state.currentQuestionIndex+delta));
+  renderExamQuestion();
+}
+
+async function finishExam(){
+  const res = await api(`/api/v1/exams/${state.currentExam.id}/finish/`, {method:'POST'});
+  const result = res.ok ? await res.json() : {};
+  document.getElementById('examCardBody').innerHTML = `
+    <div style="text-align:center; padding:30px 0;">
+      <div class="qn-badge">نتیجه‌ی آزمون</div>
+      <div class="result-big">${toFaNum(result.accuracy_pct||0)}٪</div>
+      <div class="qn-meta" style="margin-top:10px;">${toFaNum(result.correct||0)} پاسخ درست از ${toFaNum(result.answered||0)} پاسخ داده‌شده (از ${toFaNum(result.total_questions||0)} سؤال)</div>
+      <button class="btn btn-primary" style="margin:20px auto 0; justify-content:center;" onclick="exitExam()">بازگشت به داشبورد</button>
+    </div>`;
+}
+
+// ---------- BANK ----------
+async function loadBank(){
+  const status = document.getElementById('bankStatusFilter').value;
+  const res = await api('/api/v1/mistakes/?page_size=100' + (status?`&status=${status}`:''));
+  const data = res.ok ? await res.json() : {results:[]};
+  const rows = data.results || [];
+  const lessonById = Object.fromEntries(state.lessons.map(l=>[l.id, l.name]));
+  document.getElementById('bankEmpty').classList.toggle('hidden', rows.length>0);
+  document.getElementById('bankRows').innerHTML = rows.map(m=>{
+    const badgeColor = {active:'badge-rust', improving:'badge-gold', mastered:'badge-teal', archived:''}[m.status]||'';
+    return `<tr>
+      <td>${lessonById[m.lesson_id]||''}</td>
+      <td>${m.source_book||'—'}</td>
+      <td>${REASON_FA[m.reason]||''}</td>
+      <td><span class="pill ${badgeColor}" style="${badgeColor?'':'background:var(--surface-2); color:var(--ink-soft);'}">${STATUS_FA[m.status]||m.status}</span></td>
+      <td class="mono">${m.priority_score}</td>
+      <td class="mono">${m.next_review_date||'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ---------- ANALYTICS ----------
+async function loadAnalytics(){
+  const [reasonRes, weakRes, trendRes] = await Promise.all([
+    api('/api/v1/analytics/reason-breakdown/'),
+    api('/api/v1/analytics/weak-topics/'),
+    api('/api/v1/analytics/trend/?range=30d'),
+  ]);
+  const reasons = reasonRes.ok ? await reasonRes.json() : [];
+  const weak = weakRes.ok ? await weakRes.json() : {weak_topics:[]};
+  const trend = trendRes.ok ? await trendRes.json() : [];
+
+  const total = reasons.reduce((a,r)=>a+r.cnt,0) || 1;
+  const colors = {conceptual:'var(--rust)', calculation:'var(--gold)', careless:'#8B95A8',
+    forgotten_formula:'#6B7BD6', time_management:'#1F7A5C', misread_question:'#B98900', unknown:'#C7CAD4'};
+  document.getElementById('reasonBreakdown').innerHTML = reasons.length ? reasons.map(r=>`
+    <div class="wk-row">
+      <div class="wk-top"><span class="wk-name">${REASON_FA[r.reason]||r.reason}</span><span class="wk-count mono">${toFaNum(r.cnt)}</span></div>
+      <div class="wk-bar"><div class="seg" style="width:${100*r.cnt/total}%; background:${colors[r.reason]||'#ccc'}"></div></div>
+    </div>`).join('') : '<div class="empty-note">هنوز داده‌ای نیست.</div>';
+
+  document.getElementById('weakTopics').innerHTML = (weak.weak_topics||[]).length ? weak.weak_topics.map(t=>`
+    <div class="rev-item">
+      <div class="rev-icon" style="background:var(--primary-soft); color:var(--primary);">${Math.round(t.avg_priority)}</div>
+      <div class="rev-info"><div class="rev-title">${t.lesson_name} · ${t.topic_name}</div>
+      <div class="rev-meta">${toFaNum(t.mistake_count)} غلط فعال</div></div>
+    </div>`).join('') : '<div class="empty-note">هنوز داده‌ای نیست.</div>';
+
+  document.getElementById('trendChart').innerHTML = trend.length ? `
+    <div style="display:flex; align-items:flex-end; gap:6px; height:120px;">
+      ${trend.map(p=>`<div title="${p.date}: ${p.accuracy_pct}%" style="flex:1; background:var(--primary); border-radius:4px 4px 0 0; height:${Math.max(4,p.accuracy_pct)}%"></div>`).join('')}
+    </div>` : '<div class="empty-note">هنوز مروری ثبت نشده تا روند دقت رسم شود.</div>';
+}
+
+// ---------- INIT ----------
+(async function init(){
+  if(state.access){
+    try { await boot(); } catch(e){ showAuth(); }
+  } else {
+    showAuth();
+  }
+})();
+</script>
+
+</body>
+</html>
