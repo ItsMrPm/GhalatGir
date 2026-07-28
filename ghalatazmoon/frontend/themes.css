@@ -1,0 +1,88 @@
+/* تم‌های اضافی (همه بر پایه‌ی تیره تا استایل کامپوننت‌های پایه حفظ شود).
+   تم‌های پیش‌فرض dark/light در خود index.html تعریف شده‌اند. */
+
+/* اقیانوس */
+html[data-theme="ocean"]{
+  --bg:#06121a; --surface:rgba(255,255,255,.05); --surface-2:rgba(255,255,255,.08);
+  --ink:#eaf4f8; --ink-soft:#9fc0cf; --ink-faint:#6f93a3; --border:rgba(120,200,230,.14); --border-strong:rgba(120,200,230,.26);
+  --primary:#1e9bd7; --primary-soft:rgba(30,155,215,.16); --mint:#27e0c8; --teal:#27e0c8; --teal-soft:rgba(39,224,200,.14);
+  --violet:#5b8cff; --cyan:#36d6e7; --rust:#ff7a6b; --rust-soft:rgba(255,122,107,.14); --gold:#ffb454; --gold-soft:rgba(255,180,84,.16);
+}
+html[data-theme="ocean"] body::before{background:radial-gradient(900px 500px at 10% -8%, rgba(39,224,200,.16), transparent 60%),radial-gradient(800px 600px at 100% 0%, rgba(91,140,255,.14), transparent 60%);}
+
+/* غروب */
+html[data-theme="sunset"]{
+  --bg:#1a0d16; --surface:rgba(255,255,255,.05); --surface-2:rgba(255,255,255,.08);
+  --ink:#fbeef2; --ink-soft:#d6a9b8; --ink-faint:#a87e8c; --border:rgba(255,150,180,.14); --border-strong:rgba(255,150,180,.26);
+  --primary:#ff6a8b; --primary-soft:rgba(255,106,139,.16); --mint:#ff9f6b; --teal:#ff9f6b; --teal-soft:rgba(255,159,107,.14);
+  --violet:#c45bff; --cyan:#ff7ab0; --rust:#ff5470; --rust-soft:rgba(255,84,112,.16); --gold:#ffc24b; --gold-soft:rgba(255,194,75,.16);
+}
+html[data-theme="sunset"] body::before{background:radial-gradient(900px 500px at 10% -8%, rgba(255,159,107,.16), transparent 60%),radial-gradient(800px 600px at 100% 0%, rgba(196,91,255,.14), transparent 60%);}
+
+/* جنگل */
+html[data-theme="forest"]{
+  --bg:#0a140d; --surface:rgba(255,255,255,.05); --surface-2:rgba(255,255,255,.08);
+  --ink:#eaf6ec; --ink-soft:#a6c8ad; --ink-faint:#7c9c82; --border:rgba(150,220,160,.14); --border-strong:rgba(150,220,160,.26);
+  --primary:#3fae5a; --primary-soft:rgba(63,174,90,.16); --mint:#7ee08a; --teal:#7ee08a; --teal-soft:rgba(126,224,138,.14);
+  --violet:#c2a14b; --cyan:#5fd0a0; --rust:#e07a4b; --rust-soft:rgba(224,122,75,.14); --gold:#e0c24b; --gold-soft:rgba(224,194,75,.16);
+}
+html[data-theme="forest"] body::before{background:radial-gradient(900px 500px at 10% -8%, rgba(126,224,138,.15), transparent 60%),radial-gradient(800px 600px at 100% 0%, rgba(194,161,75,.12), transparent 60%);}
+
+/* تک‌رنگ */
+html[data-theme="mono"]{
+  --bg:#0d0d0f; --surface:rgba(255,255,255,.05); --surface-2:rgba(255,255,255,.09);
+  --ink:#f2f2f4; --ink-soft:#b6b6bd; --ink-faint:#85858d; --border:rgba(255,255,255,.13); --border-strong:rgba(255,255,255,.24);
+  --primary:#e8e8ee; --primary-soft:rgba(255,255,255,.12); --mint:#d8d8e0; --teal:#d8d8e0; --teal-soft:rgba(255,255,255,.10);
+  --violet:#b9b9c4; --cyan:#cfcfd8; --rust:#ff8a8a; --rust-soft:rgba(255,138,138,.14); --gold:#d8d8e0; --gold-soft:rgba(255,255,255,.10);
+}
+html[data-theme="mono"] body::before{background:radial-gradient(900px 500px at 10% -8%, rgba(255,255,255,.08), transparent 60%),radial-gradient(800px 600px at 100% 0%, rgba(255,255,255,.05), transparent 60%);}
+html[data-theme="mono"] .seg.conceptual{background:var(--rust);} html[data-theme="mono"] .seg.calculation{background:#9a9aa4;}
+
+/* ===== کتابخانه‌ی فرمول ===== */
+.fm-subject, .fm-chapter{margin-bottom:10px;}
+.fm-subject>summary, .fm-chapter>summary{cursor:pointer; list-style:none; padding:11px 14px; border-radius:12px; background:var(--surface-2); border:1px solid var(--border); font-weight:800; font-size:14px; display:flex; align-items:center; gap:8px;}
+.fm-subject>summary::before{content:'＋'; color:var(--mint); font-weight:800;}
+.fm-subject[open]>summary::before{content:'−';}
+.fm-chapter>summary{font-size:13px; background:transparent; border:none; padding:8px 6px;}
+.fm-chapter>summary::before{content:'▸'; color:var(--ink-faint);}
+.fm-chapter[open]>summary::before{content:'▾';}
+.fm-subject>summary:hover, .fm-chapter>summary:hover{border-color:var(--mint);}
+.fm-topic{margin:6px 0 12px 14px;}
+.fm-topic-h{font-size:12.5px; font-weight:800; color:var(--ink-soft); margin:6px 0; padding-right:6px; border-right:3px solid var(--violet);}
+.fm-item{display:flex; flex-direction:column; align-items:stretch; gap:8px; padding:12px 14px; border:1px solid var(--border); border-radius:12px; margin-bottom:9px; background:var(--surface);}
+.fm-main{display:flex; align-items:center; gap:12px; flex-wrap:wrap; width:100%;}
+.fm-main .fm-formula{flex:1; min-width:170px;}
+/* --- حروف‌چینی ریاضی (شبیه فرمول واقعی، نه تایپ کیبورد) --- */
+.fm-formula{font-family:'Cambria Math','STIX Two Math','Latin Modern Math','Times New Roman',Georgia,serif; font-style:italic; font-size:19px; font-weight:500; direction:ltr; letter-spacing:.2px; color:var(--ink); line-height:1.4;}
+.fm-formula.sm{font-size:16.5px;}
+.fm-formula sup, .fm-formula sub{font-style:italic;}
+.msup{font-size:.7em;}
+.msub{font-size:.7em;}
+.mfrac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:-0.6em; margin:0 3px; line-height:1.15; text-align:center;}
+.mfrac .mnum{padding:0 6px 1px;}
+.mfrac .mden{padding:1px 6px 0; border-top:1.7px solid currentColor;}
+.msqrt{display:inline-flex; align-items:flex-start; margin:0 2px;}
+.msqrt .mrad{font-style:normal; padding-left:1px;}
+.msqrt .mbody{border-top:1.7px solid currentColor; padding:1px 4px 0;}
+.mvec, .mhat{display:inline-block; position:relative; text-align:center; padding-top:2px;}
+.mvec::after{content:'→'; position:absolute; left:0; right:0; top:-0.5em; font-size:.72em; line-height:1; font-style:normal;}
+.mhat::after{content:'\02C6'; position:absolute; left:0; right:0; top:-0.6em; font-size:.95em; line-height:1; font-style:normal;}
+.mbar{display:inline-block; border-top:1.7px solid currentColor; padding-top:1px;}
+.fm-note{font-size:12px; color:var(--ink-faint); width:100%; line-height:1.9;}
+/* --- فرمول‌های تستی (سرعت) --- */
+.fm-tips{width:100%; margin-top:2px; padding:9px 11px; border-radius:10px; background:var(--gold-soft); border:1px solid var(--border);}
+.fm-tips-h{font-size:11.5px; font-weight:800; color:var(--gold); margin-bottom:6px;}
+.fm-tip{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:4px 0;}
+.fm-tip .fm-formula.sm{flex:0 0 auto; min-width:0;}
+.fm-tip-note{font-size:12px; color:var(--ink-faint);}
+/* --- مثال و راه‌حل --- */
+.fm-ex{width:100%; margin-top:2px; border:1px dashed var(--border); border-radius:10px; overflow:hidden;}
+.fm-ex>summary{cursor:pointer; list-style:none; padding:8px 12px; font-size:12.5px; font-weight:800; color:var(--mint); background:var(--surface-2);}
+.fm-ex>summary::-webkit-details-marker{display:none;}
+.fm-ex>summary:hover{color:var(--ink);}
+.fm-ex-q, .fm-ex-sol{padding:9px 14px; font-size:13.5px; line-height:2; color:var(--ink-soft); direction:rtl;}
+.fm-ex-q{border-bottom:1px solid var(--border);}
+.fm-ex-q b, .fm-ex-sol b{color:var(--ink); font-weight:800;}
+
+/* ===== تقویم مرور ===== */
+.cal-grid{display:grid; grid-template-rows:repeat(7,13px); grid-auto-flow:column; grid-auto-columns:13px; gap:3px;}

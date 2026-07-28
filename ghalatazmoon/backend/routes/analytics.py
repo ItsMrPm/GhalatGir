@@ -74,15 +74,19 @@ def by_lesson():
 def by_chapter():
     lesson_id = request.args.get("lesson_id")
     conn = get_db()
-    q = """SELECT c.id AS chapter_id, c.name AS chapter_name, COUNT(*) AS mistake_count,
-                  AVG(m.priority_score) AS avg_priority
-           FROM mistakes m JOIN chapters c ON c.id = m.chapter_id
-           WHERE m.user_id=?"""
+    # Chapters are the free-text ones the student types (m.chapter_name),
+    # with a fallback to the legacy curriculum chapters table.
+    q = """SELECT COALESCE(NULLIF(m.chapter_name, ''), c.name) AS chapter_name,
+                  COUNT(*) AS mistake_count, AVG(m.priority_score) AS avg_priority
+           FROM mistakes m LEFT JOIN chapters c ON c.id = m.chapter_id
+           WHERE m.user_id=?
+             AND COALESCE(NULLIF(m.chapter_name, ''), c.name) IS NOT NULL"""
     params = [g.user_id]
     if lesson_id:
         q += " AND m.lesson_id=?"
         params.append(lesson_id)
-    q += " GROUP BY c.id ORDER BY mistake_count DESC"
+    q += (" GROUP BY COALESCE(NULLIF(m.chapter_name, ''), c.name)"
+          " ORDER BY mistake_count DESC")
     rows = conn.execute(q, params).fetchall()
     conn.close()
     return jsonify([dict(r) for r in rows])
@@ -139,15 +143,20 @@ def reason_breakdown():
 @login_required
 def weak_topics():
     conn = get_db()
+    # Topics are the free-text ones the student types (m.topic_name), with a
+    # fallback to the legacy curriculum topics table.
     rows = conn.execute(
-        """SELECT t.id AS topic_id, t.name AS topic_name, c.name AS chapter_name,
+        """SELECT COALESCE(NULLIF(m.topic_name, ''), t.name) AS topic_name,
+                  COALESCE(NULLIF(m.chapter_name, ''), c.name) AS chapter_name,
                   l.name AS lesson_name, COUNT(*) AS mistake_count, AVG(m.priority_score) AS avg_priority
            FROM mistakes m
-           JOIN topics t ON t.id = m.topic_id
-           JOIN chapters c ON c.id = m.chapter_id
-           JOIN lessons l ON l.id = m.lesson_id
+           LEFT JOIN topics t ON t.id = m.topic_id
+           LEFT JOIN chapters c ON c.id = m.chapter_id
+           LEFT JOIN lessons l ON l.id = m.lesson_id
            WHERE m.user_id=? AND m.status IN ('active','improving')
-           GROUP BY t.id ORDER BY avg_priority DESC LIMIT 10""",
+             AND COALESCE(NULLIF(m.topic_name, ''), t.name) IS NOT NULL
+           GROUP BY COALESCE(NULLIF(m.topic_name, ''), t.name), m.lesson_id
+           ORDER BY avg_priority DESC LIMIT 10""",
         (g.user_id,),
     ).fetchall()
 
@@ -160,3 +169,46 @@ def weak_topics():
         "weak_topics": [dict(r) for r in rows],
         "weakness_patterns": [dict(r) for r in patterns],
     })
+
+
+@bp.get("/activity/")
+@login_required
+def activity():
+    try: days = max(7, min(400, int(request.args.get("days", 120))))
+    except ValueError: days = 120
+    conn = get_db()
+    rows = conn.execute(
+        """SELECT session_date, COALESCE(mistakes_added,0)+COALESCE(questions_reviewed,0) AS c
+           FROM study_sessions WHERE user_id=? AND session_date >= date('now', ?)""",
+        (g.user_id, "-%d days" % days)
+    ).fetchall()
+    conn.close()
+    by = {r["session_date"]: r["c"] for r in rows}
+    out = []
+    d0 = date.today()
+    for i in range(days-1, -1, -1):
+        d = (d0 - timedelta(days=i)).isoformat()
+        out.append({"date": d, "count": by.get(d, 0)})
+    return jsonify(out)
+
+
+@bp.get("/reason-trend/")
+@login_required
+def reason_trend():
+    conn = get_db()
+    rows = conn.execute(
+        """SELECT substr(created_at,1,10) AS d, reason, COUNT(*) AS c
+           FROM mistakes WHERE user_id=? AND created_at >= datetime('now','-90 days')
+           GROUP BY d, reason ORDER BY d""", (g.user_id,)
+    ).fetchall()
+    conn.close()
+    buckets = {}
+    for r in rows:
+        try: d = date.fromisoformat(r["d"])
+        except Exception: continue
+        week = (d - timedelta(days=d.weekday())).isoformat()
+        b = buckets.setdefault(week, {"week_start": week, "total": 0, "reasons": {}})
+        b["reasons"][r["reason"]] = b["reasons"].get(r["reason"], 0) + r["c"]
+        b["total"] += r["c"]
+    weeks = sorted(buckets.values(), key=lambda x: x["week_start"])[-8:]
+    return jsonify(weeks)

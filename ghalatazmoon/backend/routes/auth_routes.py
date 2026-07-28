@@ -80,6 +80,28 @@ def refresh():
     return jsonify(issue_token_pair(payload["sub"]))
 
 
+@bp.post("/password/")
+@login_required
+def change_password():
+    data = request.get_json(force=True, silent=True) or {}
+    old = data.get("old_password") or ""
+    new = data.get("new_password") or ""
+    if len(new) < 6:
+        return jsonify({"detail": "رمز جدید باید حداقل ۶ کاراکتر باشد."}), 400
+    conn = get_db()
+    user = conn.execute("SELECT * FROM users WHERE id=?", (g.user_id,)).fetchone()
+    if not user or not verify_password(old, user["password_hash"]):
+        conn.close()
+        return jsonify({"detail": "رمز فعلی اشتباه است."}), 401
+    conn.execute(
+        "UPDATE users SET password_hash=?, updated_at=? WHERE id=?",
+        (hash_password(new), datetime.utcnow().isoformat(), g.user_id),
+    )
+    conn.commit()
+    conn.close()
+    return jsonify({"ok": True})
+
+
 @bp.get("/me/")
 @login_required
 def me():

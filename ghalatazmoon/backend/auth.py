@@ -58,5 +58,14 @@ def login_required(fn):
         except jwt.InvalidTokenError:
             return jsonify({"detail": "Invalid token."}), 401
         g.user_id = payload["sub"]
+        # The token may be perfectly valid but point at a user that no longer
+        # exists (e.g. a fresh database while the browser still holds an old
+        # token). Without this check every write dies with an ugly FK 500.
+        from db import get_db
+        conn = get_db()
+        user = conn.execute("SELECT id FROM users WHERE id=?", (g.user_id,)).fetchone()
+        conn.close()
+        if not user:
+            return jsonify({"detail": "حساب کاربری پیدا نشد؛ لطفاً دوباره وارد شوید."}), 401
         return fn(*args, **kwargs)
     return wrapper
